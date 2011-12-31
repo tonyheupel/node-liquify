@@ -13,11 +13,18 @@
     <!-- NOTE: Fixes 
 	global = window in site.js
 	liquid.js post-generated changes: 
-	* add util.inherits (from https://raw.github.com/donedotcom/node-browserify/ebd417504853f02ab572186833ae4d6629a20085/builtins/util.js)
+	* add util.inherits (from https://raw.github.com/donedotcom/node-browserify/ebd417504853f02ab572186833ae4d6629a20085/builtins/util.js):
+  this.inherits = function (ctor, superCtor) {
+      ctor.super_ = superCtor;
+      ctor.prototype = Object.create(superCtor.prototype, 
+        { constructor: { value: ctor, enumerable: false, 
+          writable: true, configurable: true } });
+  };
 	* inside the liquid.js defines call, move everything from Liquid.Helpers = ... to Liquid.Template.registerFilter(Liquid.StandardFilters) to the 
     liqify.coffee define, directly below the Liqud = require('liquid-node') line (and above the requires for the tags), then update the paths of 
     the moved requires from "./lib/liquid/{module}" to "node_modules/liquid-node/lib/liquid/{module}"
-  * change the define and requires calls at the end from "/liquify.coffee" to "liquify.coffee"
+    * also, remove everything after the registerFilter call that has to do with loading the tags
+  * copy/paste definitions of __hasProp and __extends from above into the top of the ElseCondition definition.
 	-->
   </head>
 
