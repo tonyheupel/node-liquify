@@ -29,23 +29,25 @@
   </head>
 
   <body id="index" onload="">
-    <script id="template" type="text/liquid">
-      Here is the value: <strong>{{ foobar}}</strong>
+    <script id="simplewithfilter" type="text/liquid">
+      <div>Here is the value of foobar in uppercase: <strong>{{ foobar | upcase }}</strong></div>
     </script>
 	
-	<script id="if" type="text/liquid">
-	Trying out if.  If it works, you should see "Hooray!":&nbsp;
+	<script id="ifblock" type="text/liquid">
+	<div>
+	Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
 	{% if true %}
 	Hooray!
 	{% else %}
 	Boo!
 	{% endif %}
+	</div>
 	</script>
 
     <script type="text/javascript">
       $(function() {
-        $('body').append(Liquid.Template.parse($('script#template').html()).render({ foobar: 'bizbuzz'}));
-		    $('body').append(Liquid.Template.parse($('script#if').html()).render({}));
+        $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
+		    $('body').append(Liquid.Template.parse($('script#ifblock').html()).render({}));
       });
     </script>
   </body>
