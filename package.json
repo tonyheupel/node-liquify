@@ -1,0 +1,18 @@
+{
+  "name": "liquid-node-sample-app",
+  "author": "Tony Heupel <tonyheupel@gmail.com>",
+  "description": "Test app for liquid-node",
+  "version": "0.0.1",
+  "directories": { "src": "./src", "lib": "./lib", "test": "./test", "public": "./public" },
+  "main": "./lib/app.js",
+  "engines": {
+    "node": "~0.6.5"
+  },
+  "dependencies": {
+		"liquid-node": "git://github.com/tchype/liquid-node.git",
+		"browserify": ">=1.8.1"
+	},
+	"scripts": {
+		"postinstall": "browserify liquid-browserify.coffee -o ./public/javascripts/liquid.js"
+	}
+}

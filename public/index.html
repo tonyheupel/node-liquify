@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Client-Side Liquid Templates</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+	<script type="text/javascript" src="./javascripts/site.js"></script>
+	<script type="text/javascript" src="./javascripts/ender.js"></script>
+	<script type="text/javascript">
+	//var util = require('util');
+	// util.inherits = function (ctor, superCtor) {  // got this from: https://github.com/substack/node-browserify/pull/78/
+	//     ctor.super_ = superCtor;
+	//     ctor.prototype = Object.create(superCtor.prototype, 
+	//       { constructor: { value: ctor, enumerable: false, 
+	//         writable: true, configurable: true } });
+	//   };
+	// 
+	//   // redefine require to return this util
+	//   var origRequire = require;
+	//   require = function(file, cwd) {
+	//     if (file == 'util') { 
+	//       return util;
+	//     } else {
+	//       return origRequire(file, cwd);
+	//     }
+	//   };
+	var Liquid = require('liquid-node');
+  
+  //require = origRequire;  // restore it after this;
+	</script>
+    
+  </head>
+
+  <body id="index" onload="">
+    <script id="template" type="text/liquid">
+      Here is the value: <strong>{{ foobar}}</strong>
+    </script>
+
+    <script type="text/javascript">
+      $(function() {
+        alert(Liquid);
+        $('body').append(Liquid.Template.parse($('script#template').html()).render({ foobar: 'bizbuzz'}));
+      });
+    </script>
+  </body>
+</html>
