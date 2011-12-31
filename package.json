@@ -9,10 +9,10 @@
     "node": "~0.6.5"
   },
   "dependencies": {
-		"liquid-node": "git://github.com/tchype/liquid-node.git",
+		"liquid-node": "git://github.com/sirlantis/liquid-node.git",
 		"browserify": ">=1.8.1"
 	},
 	"scripts": {
-		"postinstall": "browserify --require liquid-node -o ./public/javascripts/liquid.js"
+		"postinstall": "browserify liquify.coffee -o ./public/javascripts/liquify.js"
 	}
 }

@@ -417,16 +417,41 @@ require.define("/node_modules/liquid-node/lib/liquid.js", function (require, mod
     return Liquid;
 
   })();
-}).call(this);
+
+  customError = function(name, inherit) {
+    var error;
+    if (inherit == null) inherit = global.Error;
+    error = function(message) {
+      this.name = name;
+      this.message = message;
+      if (global.Error.captureStackTrace) {
+        return global.Error.captureStackTrace(this, arguments.callee);
+      }
+    };
+    util.inherits(error, inherit);
+    error.prototype = inherit.prototype;
+    return error;
+  };
+
+  Liquid.Error = customError("Error");
+
+  ["ArgumentError", "ContextError", "FilterNotFound", "FilterNotFound", "FileSystemError", "StandardError", "StackLevelError", "SyntaxError"].forEach(function(className) {
+    return Liquid[className] = customError("Liquid." + className, Liquid.Error);
+  });
+
+  }).call(this);
+
 });
 
 require.define("util", function (require, module, exports, __dirname, __filename) {
-	this.inherits = function (ctor, superCtor) {
+  this.inherits = function(ctor, superCtor) {
     ctor.super_ = superCtor;
     ctor.prototype = Object.create(superCtor.prototype, 
       { constructor: { value: ctor, enumerable: false, 
         writable: true, configurable: true } });
-	};
+  };
+
+
 });
 
 require.define("/node_modules/liquid-node/lib/liquid/helpers.js", function (require, module, exports, __dirname, __filename) {
@@ -3426,28 +3451,611 @@ require.define("/node_modules/liquid-node/lib/liquid/condition.js", function (re
 
 });
 
-util = require("util");
-Liquid = require("/node_modules/liquid-node/lib/liquid.js");
-  customError = function(name, inherit) {
-    var error;
-    if (inherit == null) inherit = global.Error;
-    error = function(message) {
-      this.name = name;
-      this.message = message;
-      if (global.Error.captureStackTrace) {
-        return global.Error.captureStackTrace(this, arguments.callee);
+require.define("/node_modules/liquid-node/lib/liquid/tags/assign.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Assign = (function(_super) {
+    var Syntax, SyntaxHelp;
+
+    __extends(Assign, _super);
+
+    Assign.name = 'Assign';
+
+    SyntaxHelp = "Syntax Error in 'assign' - Valid syntax: assign [var] = [source]";
+
+    Syntax = RegExp("((?:" + Liquid.VariableSignature.source + ")+)\\s*=\\s*((?:" + Liquid.QuotedFragment.source + "))");
+
+    function Assign(tagName, markup, tokens) {
+      var match;
+      if (match = Syntax.exec(markup)) {
+        this.to = match[1];
+        this.from = match[2];
+      } else {
+        throw new Liquid.SyntaxError(SyntaxHelp);
+      }
+      Assign.__super__.constructor.apply(this, arguments);
+    }
+
+    Assign.prototype.render = function(context) {
+      var value,
+        _this = this;
+      value = context.get(this.from);
+      return Liquid.Helpers.unfuture(value, function(err, value) {
+        Liquid.log("" + _this.from + " -> " + _this.to + ": %j", value);
+        context.lastScope()[_this.to] = value;
+        return '';
+      });
+    };
+
+    return Assign;
+
+  })(require("../tag"));
+
+  Liquid.Template.registerTag('assign', Liquid.Assign);
+
+  module.exports = Liquid.Assign;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/capture.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Capture = (function(_super) {
+    var Syntax, SyntaxHelp;
+
+    __extends(Capture, _super);
+
+    Capture.name = 'Capture';
+
+    Syntax = /(\w+)/;
+
+    SyntaxHelp = "Syntax Error in 'capture' - Valid syntax: capture [var]";
+
+    function Capture(tagName, markup, tokens) {
+      var match;
+      match = Syntax.exec(markup);
+      if (match) {
+        this.to = match[1];
+      } else {
+        throw new Liquid.SyntaxError(SyntaxHelp);
+      }
+      Capture.__super__.constructor.apply(this, arguments);
+    }
+
+    Capture.prototype.render = function(context) {
+      var output;
+      output = Capture.__super__.render.apply(this, arguments);
+      context.lastScope()[this.to] = output;
+      return "";
+    };
+
+    return Capture;
+
+  })(require("../block"));
+
+  Liquid.Template.registerTag('capture', Liquid.Capture);
+
+  module.exports = Liquid.Capture;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/comment.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Comment = (function(_super) {
+
+    __extends(Comment, _super);
+
+    Comment.name = 'Comment';
+
+    function Comment() {
+      return Comment.__super__.constructor.apply(this, arguments);
+    }
+
+    Comment.prototype.render = function() {
+      return "";
+    };
+
+    return Comment;
+
+  })(require("../block"));
+
+  Liquid.Template.registerTag("comment", Liquid.Comment);
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/decrement.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Decrement = (function(_super) {
+
+    __extends(Decrement, _super);
+
+    Decrement.name = 'Decrement';
+
+    function Decrement(tagName, markup, tokens) {
+      this.variable = markup.trim();
+      Decrement.__super__.constructor.apply(this, arguments);
+    }
+
+    Decrement.prototype.render = function(context) {
+      var value, _base, _name;
+      value = (_base = context.environments[0])[_name = this.variable] || (_base[_name] = 0);
+      value = value - 1;
+      context.environments[0][this.variable] = value;
+      return value.toString();
+    };
+
+    return Decrement;
+
+  })(require("../tag"));
+
+  Liquid.Template.registerTag("decrement", Liquid.Decrement);
+
+  module.exports = Liquid.Decrement;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/for.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid, futures, _,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  _ = require("underscore")._;
+
+  futures = require("futures");
+
+  Liquid.For = (function(_super) {
+    var Syntax, SyntaxHelp;
+
+    __extends(For, _super);
+
+    For.name = 'For';
+
+    SyntaxHelp = "Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]";
+
+    Syntax = RegExp("(\\w+)\\s+in\\s+((?:" + Liquid.QuotedFragment.source + ")+)\\s*(reversed)?");
+
+    function For(tagName, markup, tokens) {
+      var match,
+        _this = this;
+      match = Syntax.exec(markup);
+      if (match) {
+        this.variableName = match[1];
+        this.collectionName = match[2];
+        this.name = "" + match[1] + "=" + match[2];
+        this.reversed = match[3];
+        this.attributes = {};
+        Liquid.Helpers.scan(markup, Liquid.TagAttributes).forEach(function(key, value) {
+          return _this.attributes[key] = value;
+        });
+      } else {
+        throw new Liquid.SyntaxError(SyntaxHelp);
+      }
+      this.nodelist = this.forBlock = [];
+      For.__super__.constructor.apply(this, arguments);
+    }
+
+    For.prototype.unknownTag = function(tag, markup, tokens) {
+      if (tag !== "else") return For.__super__.unknownTag.apply(this, arguments);
+      return this.nodelist = this.elseBlock = [];
+    };
+
+    For.prototype.render = function(context) {
+      var _base,
+        _this = this;
+      (_base = context.registers)["for"] || (_base["for"] = {});
+      return Liquid.Helpers.unfuture(context.get(this.collectionName), function(err, collection) {
+        var from, length, limit, segment, to;
+        if (err) return futures.future().deliver(err);
+        if (!(collection && collection.forEach)) return _this.renderElse(context);
+        from = _this.attributes.offset === "continue" ? Number(context.registers["for"][_this.name]) || 0 : Number(context[_this.attributes.offset]) || 0;
+        limit = context[_this.attributes.limit];
+        to = limit ? Number(limit) + from : null;
+        segment = _this.sliceCollectionUsingEach(collection, from, to);
+        if (segment.length === 0) return _this.renderElse(context);
+        if (_this.reversed) segment = _.reverse(segment);
+        length = segment.length;
+        context.registers["for"][_this.name] = from + segment.length;
+        return context.stack(function() {
+          var chunks, result;
+          result = futures.future();
+          chunks = [];
+          futures.forEachAsync(segment, function(next, item, index) {
+            var chunk;
+            try {
+              context.set(_this.variableName, item);
+              context.set("forloop", {
+                name: _this.name,
+                length: length,
+                index: index + 1,
+                index0: index,
+                rindex: length - index,
+                rindex0: length - index - 1,
+                first: index === 0,
+                last: index === length - 1
+              });
+              chunk = _this.renderAll(_this.forBlock, context);
+              return Liquid.Helpers.unfuture(chunk, function(err, chunk) {
+                if (err) {
+                  console.log("for-loop-item failed: %s %s", err, err.stack);
+                  return next();
+                } else {
+                  chunks[index] = chunk;
+                  return next();
+                }
+              });
+            } catch (e) {
+              console.log("for-loop failed: %s %s", e, e.stack);
+              return result.deliver(e);
+            }
+          }).then(function() {
+            return result.deliver(null, chunks.join(""));
+          });
+          return result;
+        });
+      });
+    };
+
+    For.prototype.sliceCollectionUsingEach = function(collection, from, to) {
+      var index, segments, yielded,
+        _this = this;
+      segments = [];
+      index = 0;
+      yielded = 0;
+      _(collection).detect(function(item) {
+        if (to && to <= index) {
+          true;
+
+        }
+        if (from <= index) segments.push(item);
+        index += 1;
+        return false;
+      });
+      return segments;
+    };
+
+    For.prototype.renderElse = function(context) {
+      if (this.elseBlock) {
+        return this.renderAll(this.elseBlock, context);
+      } else {
+        return "";
       }
     };
-    util.inherits(error, inherit);
-    error.prototype = inherit.prototype;
-    return error;
-  };
 
-  Liquid.Error = customError("Error");
+    return For;
 
-  ["ArgumentError", "ContextError", "FilterNotFound", "FilterNotFound", "FileSystemError", "StandardError", "StackLevelError", "SyntaxError"].forEach(function(className) {
-    return Liquid[className] = customError("Liquid." + className, Liquid.Error);
-  });
+  })(require("../block"));
+
+  Liquid.Template.registerTag("for", Liquid.For);
+
+  module.exports = Liquid.For;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/if.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var If, Liquid, futures, _,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __slice = Array.prototype.slice;
+
+  Liquid = require("../../liquid");
+
+  _ = (require("underscore"))._;
+
+  futures = require("futures");
+
+  module.exports = If = (function(_super) {
+    var ExpressionsAndOperators, Syntax, SyntaxHelp;
+
+    __extends(If, _super);
+
+    If.name = 'If';
+
+    SyntaxHelp = "Syntax Error in tag 'if' - Valid syntax: if [expression]";
+
+    Syntax = RegExp("(" + Liquid.QuotedFragment.source + ")\\s*([=!<>a-z_]+)?\\s*(" + Liquid.QuotedFragment.source + ")?");
+
+    ExpressionsAndOperators = RegExp("(?:\\b(?:\\s?and\\s?|\\s?or\\s?)\\b|(?:\\s*(?!\\b(?:\\s?and\\s?|\\s?or\\s?)\\b)(?:" + Liquid.QuotedFragment.source + "|\\S+)\\s*)+)");
+
+    function If(tagName, markup, tokens) {
+      this.blocks = [];
+      this.pushBlock('if', markup);
+      If.__super__.constructor.apply(this, arguments);
+    }
+
+    If.prototype.unknownTag = function(tag, markup, tokens) {
+      if (["elsif", "else"].indexOf(tag) >= 0) {
+        return this.pushBlock(tag, markup);
+      } else {
+        return If.__super__.unknownTag.apply(this, arguments);
+      }
+    };
+
+    If.prototype.render = function(context) {
+      var _this = this;
+      return context.stack(function() {
+        var blockToRender, result;
+        result = futures.future();
+        blockToRender = null;
+        futures.forEachAsync(_this.blocks, function(next, block, index) {
+          if (blockToRender) {
+            return next();
+          } else {
+            return Liquid.Helpers.unfuture(block.evaluate(context), function(err, ok) {
+              if (err) return result.deliver(err);
+              if (block.negate) ok = !ok;
+              if (ok) blockToRender = block;
+              return next();
+            });
+          }
+        }).then(function() {
+          var rendered;
+          if (blockToRender) {
+            rendered = _this.renderAll(blockToRender.attachment, context);
+            return Liquid.Helpers.unfuture(rendered, function() {
+              var args;
+              args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+              return result.deliver.apply(result, args);
+            });
+          } else {
+            return result.deliver(null, "");
+          }
+        });
+        return result;
+      });
+    };
+
+    If.prototype.pushBlock = function(tag, markup) {
+      var block, condition, expressions, match, newCondition, operator;
+      block = (function() {
+        if (tag === "else") {
+          return new Liquid.ElseCondition();
+        } else {
+          expressions = Liquid.Helpers.scan(markup, ExpressionsAndOperators);
+          expressions = expressions.reverse();
+          match = Syntax.exec(expressions.shift());
+          if (!match) throw new Liquid.SyntaxError(SyntaxHelp);
+          condition = (function(func, args, ctor) {
+            ctor.prototype = func.prototype;
+            var child = new ctor, result = func.apply(child, args);
+            return typeof result === "object" ? result : child;
+          })(Liquid.Condition, match.slice(1, 4), function() {});
+          while (expressions.length > 0) {
+            operator = String(expressions.shift()).trim();
+            match = Syntax.exec(expressions.shift());
+            if (!match) throw new SyntaxError(SyntaxHelp);
+            newCondition = (function(func, args, ctor) {
+              ctor.prototype = func.prototype;
+              var child = new ctor, result = func.apply(child, args);
+              return typeof result === "object" ? result : child;
+            })(Liquid.Condition, match.slice(1, 4), function() {});
+            newCondition[operator].call(newCondition, condition);
+            condition = newCondition;
+          }
+          return condition;
+        }
+      })();
+      this.blocks.push(block);
+      return this.nodelist = block.attach([]);
+    };
+
+    return If;
+
+  })(require("../block"));
+
+  Liquid.Template.registerTag("if", If);
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/ifchanged.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid, futures,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  futures = require("futures");
+
+  Liquid.Ifchanged = (function(_super) {
+
+    __extends(Ifchanged, _super);
+
+    Ifchanged.name = 'Ifchanged';
+
+    function Ifchanged() {
+      return Ifchanged.__super__.constructor.apply(this, arguments);
+    }
+
+    Ifchanged.prototype.render = function(context) {
+      var _this = this;
+      return context.stack(function() {
+        var rendered;
+        rendered = _this.renderAll(_this.nodelist, context);
+        return Liquid.Helpers.unfuture(rendered, function(err, output) {
+          if (err) return futures.future().deliver(err);
+          if (output !== context.registers["ifchanged"]) {
+            context.registers["ifchanged"] = output;
+            return output;
+          } else {
+            return "";
+          }
+        });
+      });
+    };
+
+    return Ifchanged;
+
+  })(require("../block"));
+
+  Liquid.Template.registerTag("ifchanged", Liquid.Ifchanged);
+
+  module.exports = Liquid.Ifchanged;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/increment.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Increment = (function(_super) {
+
+    __extends(Increment, _super);
+
+    Increment.name = 'Increment';
+
+    function Increment(tagName, markup, tokens) {
+      this.variable = markup.trim();
+      Increment.__super__.constructor.apply(this, arguments);
+    }
+
+    Increment.prototype.render = function(context) {
+      var value, _base, _name;
+      value = (_base = context.environments[0])[_name = this.variable] || (_base[_name] = 0);
+      context.environments[0][this.variable] = value + 1;
+      return value.toString();
+    };
+
+    return Increment;
+
+  })(require("../tag"));
+
+  Liquid.Template.registerTag("increment", Liquid.Increment);
+
+  module.exports = Liquid.Increment;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/raw.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  Liquid.Raw = (function(_super) {
+
+    __extends(Raw, _super);
+
+    Raw.name = 'Raw';
+
+    function Raw() {
+      return Raw.__super__.constructor.apply(this, arguments);
+    }
+
+    Raw.prototype.parse = function(tokens) {
+      var match, token;
+      this.nodelist || (this.nodelist = []);
+      while (nodelist.length() > 0) {
+        this.nodelist.pop();
+      }
+      while (tokens.length > 0) {
+        token = token.shift();
+        match = Liquid.FullToken.exec(token);
+        if (match && this.blockDelimiter() === match[1]) {
+          this.endTag();
+          return;
+        }
+      }
+      if (token.length !== 0) return this.nodelist.push(token);
+    };
+
+    return Raw;
+
+  })(require("../block"));
+
+  Liquid.Template.registerTag("raw", Liquid.Raw);
+
+  module.exports = Liquid.Raw;
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid, Unless,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  Liquid = require("../../liquid");
+
+  module.exports = Unless = (function(_super) {
+
+    __extends(Unless, _super);
+
+    Unless.name = 'Unless';
+
+    function Unless() {
+      return Unless.__super__.constructor.apply(this, arguments);
+    }
+
+    Unless.prototype.render = function(context) {
+      this.blocks[0].negate = true;
+      return Unless.__super__.render.call(this, context);
+    };
+
+    return Unless;
+
+  })(require("./if"));
+
+  Liquid.Template.registerTag("unless", Unless);
+
+}).call(this);
+
+});
+
+require.define("/liquify.coffee", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid;
+  
+  Liquid = require('liquid-node');
 
   Liquid.Helpers = require("/node_modules/liquid-node/lib/liquid/helpers");
 
@@ -3472,8 +4080,8 @@ Liquid = require("/node_modules/liquid-node/lib/liquid.js");
   Liquid.Condition = require("/node_modules/liquid-node/lib/liquid/condition");
 
   Liquid.ElseCondition = (function(_super) {
-    __hasProp = Object.prototype.hasOwnProperty;
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+      __hasProp = Object.prototype.hasOwnProperty
+      __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
     __extends(ElseCondition, _super);
 
@@ -3497,16 +4105,29 @@ Liquid = require("/node_modules/liquid-node/lib/liquid.js");
 
   Liquid.Template.registerFilter(Liquid.StandardFilters);
 
-  tagDir = "" + __dirname + "/liquid/tags";
+  require('./node_modules/liquid-node/lib/liquid/tags/assign.js');
 
-  require("fs").readdirSync(tagDir).forEach(function(file) {
-    var fullFile;
-    if (/\.(coffee|js|node)$/.test(file)) {
-      fullFile = tagDir + "/" + file;
-      return require(fullFile);
-    }
-  });
+  require('./node_modules/liquid-node/lib/liquid/tags/capture.js');
 
-// }).call(this);
-// 
-// });
+  require('./node_modules/liquid-node/lib/liquid/tags/comment.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/decrement.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/for.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/if.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/ifchanged.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/increment.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/raw.js');
+
+  require('./node_modules/liquid-node/lib/liquid/tags/unless.js');
+
+  module.exports = Liquid;
+
+}).call(this);
+
+});
+require("/liquify.coffee");
