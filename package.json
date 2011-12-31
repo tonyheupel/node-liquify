@@ -9,10 +9,10 @@
     "node": "~0.6.5"
   },
   "dependencies": {
-		"liquid-node": "git://github.com/sirlantis/liquid-node.git",
-		"browserify": ">=1.8.1"
+      "liquid-node": "git://github.com/sirlantis/liquid-node.git",
+      "browserify": ">=1.8.1"
 	},
 	"scripts": {
-		"postinstall": "browserify liquify.coffee -o ./public/javascripts/liquify.js"
+	  "postinstall": "cp -f ./support/browserify-builtins-util.js ./node_modules/browserify/builtins/util.js && browserify liquify.coffee -o ./public/javascripts/liquify.js && echo 'global = window;\n' > public/javascripts/nl.js && cat public/javascripts/liquify.js >> public/javascripts/nl.js && mv public/javascripts/nl.js public/javascripts/liquify.js"
 	}
 }

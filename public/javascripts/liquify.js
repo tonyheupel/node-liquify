@@ -1,3 +1,5 @@
+global = window;
+
 var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
@@ -439,18 +441,23 @@ require.define("/node_modules/liquid-node/lib/liquid.js", function (require, mod
     return Liquid[className] = customError("Liquid." + className, Liquid.Error);
   });
 
-  }).call(this);
+}).call(this);
 
 });
 
 require.define("util", function (require, module, exports, __dirname, __filename) {
-  this.inherits = function(ctor, superCtor) {
-    ctor.super_ = superCtor;
-    ctor.prototype = Object.create(superCtor.prototype, 
-      { constructor: { value: ctor, enumerable: false, 
-        writable: true, configurable: true } });
-  };
-
+    // only implement inherits since it seems to be the most commonly used
+this.inherits = function (ctor, superCtor) {
+  ctor.super_ = superCtor;
+  ctor.prototype = Object.create(superCtor.prototype, { 
+	constructor: { 
+	  value: ctor, 
+	  enumerable: false, 
+      writable: true, 
+	  configurable: true 
+	} 
+  });
+};
 
 });
 
@@ -4054,7 +4061,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (
 require.define("/liquify.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid;
-  
+
   Liquid = require('liquid-node');
 
   Liquid.Helpers = require("/node_modules/liquid-node/lib/liquid/helpers");
@@ -4080,8 +4087,8 @@ require.define("/liquify.coffee", function (require, module, exports, __dirname,
   Liquid.Condition = require("/node_modules/liquid-node/lib/liquid/condition");
 
   Liquid.ElseCondition = (function(_super) {
-      __hasProp = Object.prototype.hasOwnProperty
-      __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+	__hasProp = Object.prototype.hasOwnProperty;
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
     __extends(ElseCondition, _super);
 
