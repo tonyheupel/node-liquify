@@ -10,17 +10,38 @@
 	<script type="text/javascript">
   	var Liquid = require('liquid-node'); 
 	</script>
-    
+    <!-- NOTE: Fixes 
+	global = window in site.js
+	liquid.js post-generated changes: 
+	* add util.inherits (from https://raw.github.com/donedotcom/node-browserify/ebd417504853f02ab572186833ae4d6629a20085/builtins/util.js)
+	* stop the require.defines right after the:
+	return Liquid;
+
+  })();
+      and get rid of the call(this) stuff
+    * move the rest down to the end of the file requiring util and Liquid
+	* define __hasProp and __extends in the ElseCondition from earlier in the file
+	-->
   </head>
 
   <body id="index" onload="">
     <script id="template" type="text/liquid">
       Here is the value: <strong>{{ foobar}}</strong>
     </script>
+	
+	<script id="if" type="text/liquid">
+	Trying out if.  If it works, you should see "Hooray!":&nbsp;
+	{% if true %}
+	Hooray!
+	{% else %}
+	Boo!
+	{% endif %}
+	</script>
 
     <script type="text/javascript">
       $(function() {
         $('body').append(Liquid.Template.parse($('script#template').html()).render({ foobar: 'bizbuzz'}));
+		// tags arent't getting loaded yet -- $('body').append(Liquid.Template.parse($('script#if').html()).render({}));
       });
     </script>
   </body>
