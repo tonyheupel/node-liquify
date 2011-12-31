@@ -13,6 +13,6 @@
 		"browserify": ">=1.8.1"
 	},
 	"scripts": {
-		"postinstall": "browserify liquid-browserify.coffee -o ./public/javascripts/liquid.js"
+		"postinstall": "browserify --require liquid-node -o ./public/javascripts/liquid.js"
 	}
 }
