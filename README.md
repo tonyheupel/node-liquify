@@ -33,19 +33,19 @@ Reference liquify.js in your page, and start using it!
 
     <script id="ifblock" type="text/liquid">
       <div>
-	Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
-	{% if cheer %}
-	Hooray!
-	{% else %}
-	Boo!
-	{% endif %}
+        Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
+        {% if cheer %}
+        Hooray!
+        {% else %}
+        Boo!
+        {% endif %}
       </div>
     </script>
 
     <script type="text/javascript">
       $(function() {
         $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-	$('body').append(Liquid.Template.parse($('script#ifblock').html()).render({{ cheer: true }}));
+        $('body').append(Liquid.Template.parse($('script#ifblock').html()).render({{ cheer: true }}));
       });
     </script>
   </body>
