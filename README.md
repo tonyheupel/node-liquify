@@ -83,7 +83,7 @@ $ open http://127.0.0.1:8125
 ## Acknowledgements
 I have to take a minute to recognize the efforts of others.
 
-The huge, gigantic **THANK YOU** has to go to [sirlantis (Marcel Jekwerth)](http://github.com/sirlanta) for even taking on the task of
+The huge, gigantic **THANK YOU** has to go to [sirlantis (Marcel Jekwerth)](http://github.com/sirlantis) for even taking on the task of
 porting Liquid into node.  Without his work on this front, I probably would have given up trying to implement it in purely
 client-side JavaScript at some point.  Instead, his previous efforts and eagerness to accept pull requests and ideas for
 liquid-node have made it simply a 3 day weekend project to get something working!
