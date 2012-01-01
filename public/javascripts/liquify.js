@@ -348,10 +348,104 @@ require.define("/node_modules/liquid-node/package.json", function (require, modu
 
 require.define("/node_modules/liquid-node/lib/liquid.js", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var Liquid, customError, tagDir, util,
-    _this = this,
+  var Liquid, loadTags, util,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  util = require("util");
+
+  loadTags = function() {
+    var tagDir;
+    tagDir = "" + __dirname + "/liquid/tags";
+    return require("fs").readdirSync(tagDir).forEach(function(file) {
+      var fullFile;
+      if (/\.(coffee|js|node)$/.test(file)) {
+        fullFile = tagDir + "/" + file;
+        return require(fullFile);
+      }
+    });
+  };
+
+  Liquid = require("./liquid_base");
+
+  Liquid.Helpers = require("./liquid/helpers");
+
+  Liquid.Drop = require("./liquid/drop");
+
+  Liquid.Strainer = require("./liquid/strainer");
+
+  Liquid.Context = require("./liquid/context");
+
+  Liquid.Tag = require("./liquid/tag");
+
+  Liquid.Block = require("./liquid/block");
+
+  Liquid.Document = require("./liquid/document");
+
+  Liquid.Variable = require("./liquid/variable");
+
+  Liquid.Template = require("./liquid/template");
+
+  Liquid.StandardFilters = require("./liquid/standard_filters");
+
+  Liquid.Condition = require("./liquid/condition");
+
+  Liquid.ElseCondition = (function(_super) {
+
+    __extends(ElseCondition, _super);
+
+    ElseCondition.name = 'ElseCondition';
+
+    function ElseCondition() {
+      return ElseCondition.__super__.constructor.apply(this, arguments);
+    }
+
+    ElseCondition.prototype["else"] = function() {
+      return true;
+    };
+
+    ElseCondition.prototype.evaluate = function() {
+      return true;
+    };
+
+    return ElseCondition;
+
+  })(Liquid.Condition);
+
+  Liquid.Template.registerFilter(Liquid.StandardFilters);
+
+  try {
+    loadTags();
+  } catch (e) {
+
+  }
+
+  module.exports = Liquid;
+
+}).call(this);
+
+});
+
+require.define("util", function (require, module, exports, __dirname, __filename) {
+    // only implement inherits since it seems to be the most commonly used
+  this.inherits = function (ctor, superCtor) {
+    ctor.super_ = superCtor;
+    ctor.prototype = Object.create(superCtor.prototype, { 
+  	constructor: { 
+  	  value: ctor, 
+  	  enumerable: false, 
+        writable: true, 
+  	  configurable: true 
+  	} 
+    });
+  };
+
+});
+
+require.define("/node_modules/liquid-node/lib/liquid_base.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid, customError, util,
+    _this = this;
 
   util = require("util");
 
@@ -442,22 +536,6 @@ require.define("/node_modules/liquid-node/lib/liquid.js", function (require, mod
   });
 
 }).call(this);
-
-});
-
-require.define("util", function (require, module, exports, __dirname, __filename) {
-    // only implement inherits since it seems to be the most commonly used
-  this.inherits = function (ctor, superCtor) {
-    ctor.super_ = superCtor;
-    ctor.prototype = Object.create(superCtor.prototype, { 
-  	constructor: { 
-  	  value: ctor, 
-  	  enumerable: false, 
-        writable: true, 
-  	  configurable: true 
-  	} 
-    });
-  };
 
 });
 
@@ -2484,7 +2562,7 @@ require.define("/node_modules/liquid-node/lib/liquid/context.js", function (requ
   var Context, Liquid, futures, _,
     __slice = Array.prototype.slice;
 
-  Liquid = require("../liquid");
+  Liquid = require("../liquid_base");
 
   _ = require("underscore")._;
 
@@ -2833,7 +2911,7 @@ require.define("/node_modules/liquid-node/lib/liquid/block.js", function (requir
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../liquid");
+  Liquid = require("../liquid_base");
 
   _ = require("underscore")._;
 
@@ -3011,7 +3089,7 @@ require.define("/node_modules/liquid-node/lib/liquid/variable.js", function (req
   var Liquid, Variable, futures, _,
     __slice = Array.prototype.slice;
 
-  Liquid = require("../liquid");
+  Liquid = require("../liquid_base");
 
   _ = require("underscore")._;
 
@@ -3120,7 +3198,7 @@ require.define("/node_modules/liquid-node/lib/liquid/template.js", function (req
   var Liquid, _,
     __slice = Array.prototype.slice;
 
-  Liquid = require("../liquid");
+  Liquid = require("../liquid_base");
 
   _ = require("underscore")._;
 
@@ -3464,7 +3542,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/assign.js", function (
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Assign = (function(_super) {
     var Syntax, SyntaxHelp;
@@ -3517,7 +3595,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/capture.js", function 
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Capture = (function(_super) {
     var Syntax, SyntaxHelp;
@@ -3566,7 +3644,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/comment.js", function 
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Comment = (function(_super) {
 
@@ -3598,7 +3676,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/decrement.js", functio
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Decrement = (function(_super) {
 
@@ -3637,7 +3715,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/for.js", function (req
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   _ = require("underscore")._;
 
@@ -3780,7 +3858,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/if.js", function (requ
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
     __slice = Array.prototype.slice;
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   _ = (require("underscore"))._;
 
@@ -3897,7 +3975,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/ifchanged.js", functio
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   futures = require("futures");
 
@@ -3946,7 +4024,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/increment.js", functio
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Increment = (function(_super) {
 
@@ -3984,7 +4062,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/raw.js", function (req
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   Liquid.Raw = (function(_super) {
 
@@ -4031,7 +4109,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Liquid = require("../../liquid");
+  Liquid = require("../../liquid_base");
 
   module.exports = Unless = (function(_super) {
 
@@ -4063,56 +4141,6 @@ require.define("/liquify.coffee", function (require, module, exports, __dirname,
   var Liquid;
 
   Liquid = require('liquid-node');
-
-
-  Liquid.Helpers = require("/node_modules/liquid-node/lib/liquid/helpers");
-
-  Liquid.Drop = require("/node_modules/liquid-node/lib/liquid/drop");
-
-  Liquid.Strainer = require("/node_modules/liquid-node/lib/liquid/strainer");
-
-  Liquid.Context = require("/node_modules/liquid-node/lib/liquid/context");
-
-  Liquid.Tag = require("/node_modules/liquid-node/lib/liquid/tag");
-
-  Liquid.Block = require("/node_modules/liquid-node/lib/liquid/block");
-
-  Liquid.Document = require("/node_modules/liquid-node/lib/liquid/document");
-
-  Liquid.Variable = require("/node_modules/liquid-node/lib/liquid/variable");
-
-  Liquid.Template = require("/node_modules/liquid-node/lib/liquid/template");
-
-  Liquid.StandardFilters = require("/node_modules/liquid-node/lib/liquid/standard_filters");
-
-  Liquid.Condition = require("/node_modules/liquid-node/lib/liquid/condition");
-
-  Liquid.ElseCondition = (function(_super) {
-    __hasProp = Object.prototype.hasOwnProperty;
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
-
-    __extends(ElseCondition, _super);
-
-    ElseCondition.name = 'ElseCondition';
-
-    function ElseCondition() {
-      return ElseCondition.__super__.constructor.apply(this, arguments);
-    }
-
-    ElseCondition.prototype["else"] = function() {
-      return true;
-    };
-
-    ElseCondition.prototype.evaluate = function() {
-      return true;
-    };
-
-    return ElseCondition;
-
-  })(Liquid.Condition);
-
-  Liquid.Template.registerFilter(Liquid.StandardFilters);
-
 
   require('./node_modules/liquid-node/lib/liquid/tags/assign.js');
 
