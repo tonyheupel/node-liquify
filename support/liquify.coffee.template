@@ -1,0 +1,5 @@
+Liquid = require 'liquid-node'
+
+{{ tags }}
+
+module.exports = Liquid

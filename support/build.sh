@@ -1,4 +1,9 @@
-# patch missing util features in browserify
+# build the liquify "module"
+node ./support/build_liquify_coffee.js
+
+# patch missing util features in browserify and move 
+# liquify module into node_modules so it can be "required"
+# by browserify
 cp -fR ./support/node_modules/ ./node_modules/
 
 # browserify to liquify.js
