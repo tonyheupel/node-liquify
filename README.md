@@ -52,7 +52,8 @@ Reference liquify.js in your page, and start using it!
 </html>
 ```
 
-Results in:
+Results in the following html page:
+
 Here is the value of foobar in uppercase: **BIZBUZZ**
 
 Trying out the if block. If it works, you should see "Hooray!":  Hooray!
