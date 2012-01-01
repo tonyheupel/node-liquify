@@ -4,43 +4,33 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Client-Side Liquid Templates</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	
+
 	<script type="text/javascript" src="./javascripts/liquify.min.js"></script>
   	<script type="text/javascript">
-    	var Liquid = require('liquify'); 
-  	</script>
-    <!-- NOTE: Fixes 
-    	liquid.js post-generated changes: 
-      * add global = window; to the top of liquify.js
-    	* inside the liquid.js defines call, 
-        * remove the end of the liquid.js method that loads tags from the files 
-        * move everything just above that (from Liquid.Helpers = ... to Liquid.Template.registerFilter(Liquid.StandardFilters)) to the 
-          liqify.coffee define, directly below the Liqud = require('liquid-node') line (and above the requires for the tags)
-        * then update the paths of the moved requires from "./lib/liquid/{module}" to "node_modules/liquid-node/lib/liquid/{module}"
-      * copy/paste definitions of __hasProp and __extends from above into the top of the ElseCondition definition.
-    	-->
+      var Liquid = require('liquify');
+    </script>
   </head>
 
-  <body id="index" onload="">
+  <body>
     <script id="simplewithfilter" type="text/liquid">
       <div>Here is the value of foobar in uppercase: <strong>{{ foobar | upcase }}</strong></div>
     </script>
-	
+
 	<script id="ifblock" type="text/liquid">
-	<div>
-	Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
-	{% if true %}
-	Hooray!
-	{% else %}
-	Boo!
-	{% endif %}
-	</div>
+      <div>
+        Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
+        {% if true %}
+        Hooray!
+        {% else %}
+        Boo!
+        {% endif %}
+      </div>
 	</script>
 
     <script type="text/javascript">
       $(function() {
         $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-		    $('body').append(Liquid.Template.parse($('script#ifblock').html()).render({}));
+		$('body').append(Liquid.Template.parse($('script#ifblock').html()).render({}));
       });
     </script>
   </body>
