@@ -62,17 +62,19 @@ Trying out the if block. If it works, you should see "Hooray!":  Hooray!
 ### Server-Side
 You may update your liquify.js files to the latest version of _liquid-node's_ capabilities by simply installing the package from NPM:
 
-```bash
+```shell
 $ npm install liquify
 ```
 
-Or by installing the latest nodpackage from git directly:
-```bash
+Or by installing the latest node package from git directly:
+
+```shell
 $ npm install git@github.com/tchype/node-liquify
 ```
 
 You can see it working by running the sample page that uses liquify to render it's markup:
-```bash
+
+```shell
 $ node ./node_modules/liquify/app.js
 Server running at http://127.0.0.1:8125/
 $ open http://127.0.0.1:8125
@@ -81,7 +83,7 @@ $ open http://127.0.0.1:8125
 ## Acknowledgements
 I have to take a minute to recognize the efforts of others.
 
-The biggest **THANK YOU** has to go to [sirlantis (Marcel Jekwerth)](http://github.com/sirlanta) for even taking on the task of
+The huge, gigantic **THANK YOU** has to go to [sirlantis (Marcel Jekwerth)](http://github.com/sirlanta) for even taking on the task of
 porting Liquid into node.  Without his work on this front, I probably would have given up trying to implement it in purely
 client-side JavaScript at some point.  Instead, his previous efforts and eagerness to accept pull requests and ideas for
 liquid-node have made it simply a 3 day weekend project to get something working!
@@ -89,4 +91,6 @@ liquid-node have made it simply a 3 day weekend project to get something working
 Also, a big thank you goes out to [substack](http://github.com/substack) for [browserify](http://github.com/substack/node-browserify) as
 well as the overall contributions to node and Open Source.  Thanks!
 
+Finally, the biggest thank you (as well as an "_I'm sorry for keeping my nose in the computer all weekend_") has to go to my lovely wife and
+my silly, wonderful boys.  Thanks for being patient with me!!
 
