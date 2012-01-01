@@ -4,7 +4,7 @@
   "description": "Generates a liqify.js to provide Liquid templating in client-side javascript",
   "version": "0.0.1",
   "directories": { "support": "./support", "lib": "./lib", "test": "./test", "public": "./public" },
-  "main": "./lib/app.js",
+  "main": "./node_modules/liquify.coffee",
   "engines": {
     "node": "~0.6.5"
   },

@@ -342,6 +342,38 @@ exports.extname = function(path) {
 
 });
 
+require.define("/node_modules/liquify.coffee", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Liquid;
+
+  Liquid = require('liquid-node');
+
+  require('./liquid-node/lib/liquid/tags/assign.js');
+
+  require('./liquid-node/lib/liquid/tags/capture.js');
+
+  require('./liquid-node/lib/liquid/tags/comment.js');
+
+  require('./liquid-node/lib/liquid/tags/decrement.js');
+
+  require('./liquid-node/lib/liquid/tags/for.js');
+
+  require('./liquid-node/lib/liquid/tags/if.js');
+
+  require('./liquid-node/lib/liquid/tags/ifchanged.js');
+
+  require('./liquid-node/lib/liquid/tags/increment.js');
+
+  require('./liquid-node/lib/liquid/tags/raw.js');
+
+  require('./liquid-node/lib/liquid/tags/unless.js');
+
+  module.exports = Liquid;
+
+}).call(this);
+
+});
+
 require.define("/node_modules/liquid-node/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"./lib/liquid.js"}
 });
@@ -4135,36 +4167,3 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (
 }).call(this);
 
 });
-
-require.define("/liquify.coffee", function (require, module, exports, __dirname, __filename) {
-    (function() {
-  var Liquid;
-
-  Liquid = require('liquid-node');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/assign.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/capture.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/comment.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/decrement.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/for.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/if.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/ifchanged.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/increment.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/raw.js');
-
-  require('./node_modules/liquid-node/lib/liquid/tags/unless.js');
-
-  module.exports = Liquid;
-
-}).call(this);
-
-});
-require("/liquify.coffee");
