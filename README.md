@@ -20,9 +20,9 @@ Reference liquify.js in your page, and start using it!
     <title>Client-Side Liquid Templates</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	
-	  <script type="text/javascript" src="./javascripts/liquify.min.js"></script>
+    <script type="text/javascript" src="./javascripts/liquify.min.js"></script>
     <script type="text/javascript">
-    	var Liquid = require('liquify');
+      var Liquid = require('liquify');
     </script>
   </head>
 
@@ -30,22 +30,22 @@ Reference liquify.js in your page, and start using it!
     <script id="simplewithfilter" type="text/liquid">
       <div>Here is the value of foobar in uppercase: <strong>{{ foobar | upcase }}</strong></div>
     </script>
-	
-	  <script id="ifblock" type="text/liquid">
-	    <div>
-	      Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
-	      {% if cheer %}
-	      Hooray!
-	      {% else %}
-	      Boo!
-	      {% endif %}
-	    </div>
-	  </script>
+
+    <script id="ifblock" type="text/liquid">
+      <div>
+	Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
+	{% if cheer %}
+	Hooray!
+	{% else %}
+	Boo!
+	{% endif %}
+      </div>
+    </script>
 
     <script type="text/javascript">
       $(function() {
         $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-	      $('body').append(Liquid.Template.parse($('script#ifblock').html()).render({{ cheer: true }}));
+	$('body').append(Liquid.Template.parse($('script#ifblock').html()).render({{ cheer: true }}));
       });
     </script>
   </body>
