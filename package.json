@@ -1,9 +1,9 @@
 {
-  "name": "liquid-node-sample-app",
+  "name": "liquify",
   "author": "Tony Heupel <tonyheupel@gmail.com>",
-  "description": "Test app for liquid-node",
+  "description": "Generates a liqify.js to provide Liquid templating in client-side javascript",
   "version": "0.0.1",
-  "directories": { "src": "./src", "lib": "./lib", "test": "./test", "public": "./public" },
+  "directories": { "support": "./support", "lib": "./lib", "test": "./test", "public": "./public" },
   "main": "./lib/app.js",
   "engines": {
     "node": "~0.6.5"
