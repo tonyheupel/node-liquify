@@ -447,17 +447,17 @@ require.define("/node_modules/liquid-node/lib/liquid.js", function (require, mod
 
 require.define("util", function (require, module, exports, __dirname, __filename) {
     // only implement inherits since it seems to be the most commonly used
-this.inherits = function (ctor, superCtor) {
-  ctor.super_ = superCtor;
-  ctor.prototype = Object.create(superCtor.prototype, { 
-	constructor: { 
-	  value: ctor, 
-	  enumerable: false, 
-      writable: true, 
-	  configurable: true 
-	} 
-  });
-};
+  this.inherits = function (ctor, superCtor) {
+    ctor.super_ = superCtor;
+    ctor.prototype = Object.create(superCtor.prototype, { 
+  	constructor: { 
+  	  value: ctor, 
+  	  enumerable: false, 
+        writable: true, 
+  	  configurable: true 
+  	} 
+    });
+  };
 
 });
 
@@ -4064,6 +4064,7 @@ require.define("/liquify.coffee", function (require, module, exports, __dirname,
 
   Liquid = require('liquid-node');
 
+
   Liquid.Helpers = require("/node_modules/liquid-node/lib/liquid/helpers");
 
   Liquid.Drop = require("/node_modules/liquid-node/lib/liquid/drop");
@@ -4111,6 +4112,7 @@ require.define("/liquify.coffee", function (require, module, exports, __dirname,
   })(Liquid.Condition);
 
   Liquid.Template.registerFilter(Liquid.StandardFilters);
+
 
   require('./node_modules/liquid-node/lib/liquid/tags/assign.js');
 
