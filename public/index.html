@@ -29,8 +29,16 @@
 
     <script type="text/javascript">
       $(function() {
-        $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-		$('body').append(Liquid.Template.parse($('script#ifblock').html()).render({}));
+        // Build templates collection with parsed templates
+        // NOTE: Liquid.Templates is just made-up for this example as a place to store pre-parsed templates
+        //       -- it isn't core to Liquify or Liquid
+        Liquid.Templates = {}; 
+    	  $('script[type="text/liquid"]').each(function(index, item) {
+          Liquid.Templates[item.id] = Liquid.Template.parse($(item).html());
+    	  });
+        
+        $('body').append(Liquid.Templates['simplewithfilter'].render({ foobar: 'bizbuzz'}));
+        $('body').append(Liquid.Templates['ifblock'].render({}));
       });
     </script>
   </body>
