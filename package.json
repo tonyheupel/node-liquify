@@ -9,6 +9,7 @@
     "node": "~0.6.5"
   },
   "dependencies": {
+    "liquid-node": "git://github.com/tchype/liquid-node.git#pre-promise",
     "liquid-partial": "git://github.com/tchype/node-liquid-partial.git",
     "browserify": ">=1.8.1"
 	},

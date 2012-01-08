@@ -19,7 +19,7 @@
 	<script id="ifblock" type="text/liquid">
       <div>
         Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
-        {% if true %}
+        {% if cheer %}
         Hooray!
         {% else %}
         Boo!
@@ -27,11 +27,21 @@
       </div>
 	</script>
 
-    <script type="text/javascript">
-      $(function() {
-        $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-		$('body').append(Liquid.Template.parse($('script#ifblock').html()).render({}));
+	<div id="page" style="display:none;">
+  {% partial ifblock %}
+  {% partial simplewithfilter %}
+	</div>
+
+  <script type="text/javascript">
+    $(function() {
+      $('script[type="text/liquid"]').each(function(index, item) {
+        Liquid.Partial.registerTemplate(item.id, $(item).html());
       });
+
+      var page = $('#page');
+      var pageTemplate = page.html();
+      page.html(Liquid.Template.parse(pageTemplate).render({ foobar: 'bizbuzz', cheer: true })).show();
+    });
     </script>
   </body>
 </html>
