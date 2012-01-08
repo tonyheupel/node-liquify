@@ -41,8 +41,8 @@ Reference liquify.js in your page, and start using it!
 	  </script>
 
 	  <div id="page" style="display:none;">
-      {% partial ifblock %}
       {% partial simplewithfilter %}
+      {% partial ifblock %}
 	  </div>
 
     <script type="text/javascript">
