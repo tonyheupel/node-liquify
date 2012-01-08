@@ -117,7 +117,11 @@ require.alias = function (from, to) {
     }
     var basedir = path.dirname(res);
     
-    var keys = Object_keys(require.modules);
+    var keys = (Object.keys || function (obj) {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    })(require.modules);
     
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
@@ -162,17 +166,13 @@ require.define = function (filename, fn) {
     };
 };
 
-var Object_keys = Object.keys || function (obj) {
-    var res = [];
-    for (var key in obj) res.push(key)
-    return res;
-};
-
 if (typeof process === 'undefined') process = {};
 
 if (!process.nextTick) process.nextTick = (function () {
     var queue = [];
-    var canPost = window.postMessage && window.addEventListener
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
     
     if (canPost) {
         window.addEventListener('message', function (ev) {
@@ -344,9 +344,11 @@ exports.extname = function(path) {
 
 require.define("/node_modules/liquify.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var Liquid;
+  var Liquid, partial;
 
-  Liquid = require('liquid-node');
+  Liquid = {};
+
+  partial = require('liquid-partial');
 
   module.exports = Liquid;
 
@@ -354,11 +356,24 @@ require.define("/node_modules/liquify.coffee", function (require, module, export
 
 });
 
-require.define("/node_modules/liquid-node/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/package.json", function (require, module, exports, __dirname, __filename) {
+    module.exports = {"main":"./index.js"}
+});
+
+require.define("/node_modules/liquid-partial/index.js", function (require, module, exports, __dirname, __filename) {
+    var Liquid = require('liquid-node')
+
+Liquid.Tempates = require('./lib/templates')
+
+
+module.exports = Liquid.Partial = require('./lib/partial')
+});
+
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"./lib/index.js"}
 });
 
-require.define("/node_modules/liquid-node/lib/index.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/index.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, customError, util,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -461,7 +476,7 @@ require.define("/node_modules/liquid-node/lib/index.js", function (require, modu
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid;
 
@@ -550,7 +565,7 @@ require.define("util", function (require, module, exports, __dirname, __filename
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/helpers.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/helpers.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var futures,
     __slice = Array.prototype.slice;
@@ -642,11 +657,11 @@ require.define("/node_modules/liquid-node/lib/liquid/helpers.js", function (requ
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"index.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/index.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/index.js", function (require, module, exports, __dirname, __filename) {
     /*jslint browser: true, devel: true, debug: true, es5: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, strict: true */
 (function () {
   "use strict";
@@ -676,11 +691,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/index.js", functi
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/future/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/future/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"future.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/future/future.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/future/future.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -975,11 +990,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/futu
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/forEachAsync/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/forEachAsync/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"forEachAsync.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/forEachAsync/forEachAsync.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/forEachAsync/forEachAsync.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1004,11 +1019,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/forE
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/sequence/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/sequence/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"sequence.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/sequence/sequence.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/sequence/sequence.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1073,11 +1088,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/sequ
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/join/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/join/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"join.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/join/join.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/join/join.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1185,11 +1200,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/join
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/asyncify/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/asyncify/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"asyncify.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/asyncify/asyncify.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/asyncify/asyncify.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1230,11 +1245,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/asyn
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/loop/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/loop/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"loop.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/loop/loop.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/loop/loop.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1362,11 +1377,11 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/loop
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/chainify/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/chainify/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"chainify.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/futures/node_modules/chainify/chainify.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/futures/node_modules/chainify/chainify.js", function (require, module, exports, __dirname, __filename) {
     (function () {
   "use strict";
 
@@ -1484,7 +1499,7 @@ require.define("/node_modules/liquid-node/node_modules/futures/node_modules/chai
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/drop.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/drop.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Drop, _,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -1549,13 +1564,13 @@ require.define("/node_modules/liquid-node/lib/liquid/drop.js", function (require
 
 });
 
-require.define("/node_modules/liquid-node/node_modules/underscore/package.json", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/underscore/package.json", function (require, module, exports, __dirname, __filename) {
     module.exports = {"main":"underscore.js"}
 });
 
-require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js", function (require, module, exports, __dirname, __filename) {
-    //     Underscore.js 1.2.3
-//     (c) 2009-2011 Jeremy Ashkenas, DocumentCloud Inc.
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/node_modules/underscore/underscore.js", function (require, module, exports, __dirname, __filename) {
+    //     Underscore.js 1.2.4
+//     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore is freely distributable under the MIT license.
 //     Portions of Underscore are inspired or borrowed from Prototype,
 //     Oliver Steele's Functional, and John Resig's Micro-Templating.
@@ -1581,7 +1596,6 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
 
   // Create quick reference variables for speed access to core prototypes.
   var slice            = ArrayProto.slice,
-      concat           = ArrayProto.concat,
       unshift          = ArrayProto.unshift,
       toString         = ObjProto.toString,
       hasOwnProperty   = ObjProto.hasOwnProperty;
@@ -1624,7 +1638,7 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
   }
 
   // Current version.
-  _.VERSION = '1.2.3';
+  _.VERSION = '1.2.4';
 
   // Collection Functions
   // --------------------
@@ -1658,6 +1672,7 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
     each(obj, function(value, index, list) {
       results[results.length] = iterator.call(context, value, index, list);
     });
+    if (obj.length === +obj.length) results.length = obj.length;
     return results;
   };
 
@@ -1774,7 +1789,7 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
   _.invoke = function(obj, method) {
     var args = slice.call(arguments, 2);
     return _.map(obj, function(value) {
-      return (method.call ? method || value : value[method]).apply(value, args);
+      return (_.isFunction(method) ? method || value : value[method]).apply(value, args);
     });
   };
 
@@ -2139,7 +2154,7 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
   // conditionally execute the original function.
   _.wrap = function(func, wrapper) {
     return function() {
-      var args = concat.apply([func], arguments);
+      var args = [func].concat(slice.call(arguments, 0));
       return wrapper.apply(this, args);
     };
   };
@@ -2448,6 +2463,11 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
     escape      : /<%-([\s\S]+?)%>/g
   };
 
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /.^/;
+
   // JavaScript micro-templating, similar to John Resig's implementation.
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
@@ -2457,15 +2477,16 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
       'with(obj||{}){__p.push(\'' +
       str.replace(/\\/g, '\\\\')
          .replace(/'/g, "\\'")
-         .replace(c.escape, function(match, code) {
+         .replace(c.escape || noMatch, function(match, code) {
            return "',_.escape(" + code.replace(/\\'/g, "'") + "),'";
          })
-         .replace(c.interpolate, function(match, code) {
+         .replace(c.interpolate || noMatch, function(match, code) {
            return "'," + code.replace(/\\'/g, "'") + ",'";
          })
-         .replace(c.evaluate || null, function(match, code) {
+         .replace(c.evaluate || noMatch, function(match, code) {
            return "');" + code.replace(/\\'/g, "'")
-                              .replace(/[\r\n\t]/g, ' ') + ";__p.push('";
+                              .replace(/[\r\n\t]/g, ' ')
+                              .replace(/\\\\/g, '\\') + ";__p.push('";
          })
          .replace(/\r/g, '\\r')
          .replace(/\n/g, '\\n')
@@ -2476,6 +2497,11 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
     return function(data) {
       return func.call(this, data, _);
     };
+  };
+
+  // Add a "chain" function, which will delegate to the wrapper.
+  _.chain = function(obj) {
+    return _(obj).chain();
   };
 
   // The OOP Wrapper
@@ -2510,8 +2536,11 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
   each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
     var method = ArrayProto[name];
     wrapper.prototype[name] = function() {
-      method.apply(this._wrapped, arguments);
-      return result(this._wrapped, this._chain);
+      var wrapped = this._wrapped;
+      method.apply(wrapped, arguments);
+      var length = wrapped.length;
+      if ((name == 'shift' || name == 'splice') && length === 0) delete wrapped[0];
+      return result(wrapped, this._chain);
     };
   });
 
@@ -2538,7 +2567,7 @@ require.define("/node_modules/liquid-node/node_modules/underscore/underscore.js"
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/strainer.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/strainer.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Strainer, _;
 
@@ -2568,7 +2597,7 @@ require.define("/node_modules/liquid-node/lib/liquid/strainer.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/context.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/context.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Context, Liquid, futures, _,
     __slice = Array.prototype.slice;
@@ -2880,7 +2909,7 @@ require.define("/node_modules/liquid-node/lib/liquid/context.js", function (requ
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tag.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tag.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Tag;
 
@@ -2916,7 +2945,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tag.js", function (require,
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/block.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/block.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Block, Liquid, futures, util, _,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3064,7 +3093,7 @@ require.define("/node_modules/liquid-node/lib/liquid/block.js", function (requir
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/document.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/document.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3095,7 +3124,7 @@ require.define("/node_modules/liquid-node/lib/liquid/document.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/variable.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/variable.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, Variable, futures, _,
     __slice = Array.prototype.slice;
@@ -3204,7 +3233,7 @@ require.define("/node_modules/liquid-node/lib/liquid/variable.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/template.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/template.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, _,
     __slice = Array.prototype.slice;
@@ -3302,7 +3331,7 @@ require.define("/node_modules/liquid-node/lib/liquid/template.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/standard_filters.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/standard_filters.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var toNumber, toString, _;
 
@@ -3422,7 +3451,7 @@ require.define("/node_modules/liquid-node/lib/liquid/standard_filters.js", funct
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/condition.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/condition.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Condition;
 
@@ -3547,7 +3576,7 @@ require.define("/node_modules/liquid-node/lib/liquid/condition.js", function (re
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/assign.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/assign.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3600,7 +3629,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/assign.js", function (
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/capture.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/capture.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3649,7 +3678,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/capture.js", function 
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/comment.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/comment.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3681,7 +3710,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/comment.js", function 
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/decrement.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/decrement.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3720,7 +3749,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/decrement.js", functio
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/for.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/for.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, futures, _,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3862,7 +3891,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/for.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/if.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/if.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var If, Liquid, futures, _,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -3980,7 +4009,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/if.js", function (requ
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/ifchanged.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/ifchanged.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, futures,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -4029,7 +4058,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/ifchanged.js", functio
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/increment.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/increment.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -4067,7 +4096,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/increment.js", functio
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/raw.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/raw.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -4114,7 +4143,7 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/raw.js", function (req
 
 });
 
-require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid-partial/node_modules/liquid-node/lib/liquid/tags/unless.js", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid, Unless,
     __hasProp = Object.prototype.hasOwnProperty,
@@ -4142,6 +4171,71 @@ require.define("/node_modules/liquid-node/lib/liquid/tags/unless.js", function (
   })(require("./if"));
 
   Liquid.Template.registerTag("unless", Unless);
+
+}).call(this);
+
+});
+
+require.define("/node_modules/liquid-partial/lib/templates.js", function (require, module, exports, __dirname, __filename) {
+    var Liquid = require('liquid-node')
+
+if (!Liquid) throw new Error('Liquid not defined!')
+
+Liquid.Templates = {}
+
+// Register a template
+Liquid.registerTemplate = function(id, template) {
+  if (!id) throw new Error('id must be defined')
+  if (typeof template === 'string') template = Liquid.Template.parse(template)
+
+  Liquid.Templates[id] = template
+};
+
+module.exports = Liquid.Templates
+});
+
+require.define("/node_modules/liquid-partial/lib/partial.js", function (require, module, exports, __dirname, __filename) {
+    (function() {
+  var Partial, Liquid,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+	Liquid = require("liquid-node")
+  Liquid.Templates = require("./templates");
+
+  module.exports = Partial = (function(_super) {
+    var Syntax, SyntaxHelp;
+
+    __extends(Partial, _super);
+
+    Partial.name = 'Partial';
+
+    Syntax = RegExp("(" + Liquid.QuotedFragment.source + ")");
+
+    SyntaxHelp = "Syntax Error in 'partial' - Valid syntax: partial id";
+
+    function Partial(tagName, markup, tokens) {
+      var match;
+      match = Syntax.exec(markup);
+      if (match) {
+        this.id = match[1];
+      } else {
+        throw new Liquid.SyntaxError(SyntaxHelp);
+      }
+      Partial.__super__.constructor.apply(this, arguments);
+    }
+
+    Partial.prototype.render = function(context) {
+      if (!Liquid.Templates[this.id]) throw new Error("No template found with id '" + this.id + "'")
+      var output = Liquid.Templates[this.id].render(context);
+      return output;
+    };
+
+    return Partial;
+
+  })(Liquid.Tag);
+
+  Liquid.Template.registerTag('partial', Partial);
 
 }).call(this);
 

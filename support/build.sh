@@ -3,6 +3,9 @@
 # by browserify
 cp -fR ./support/node_modules/ ./node_modules/
 
+# move node-liquid-partial to liquid-partial until it's referred to from npm
+mv ./node_modules/node-liquid-partial ./node_modules/liquid-partial
+
 # browserify to liquify.js
 browserify --require liquify -o ./public/javascripts/liquify.js 
 
