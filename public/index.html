@@ -28,20 +28,20 @@
 	</script>
 
 	<div id="page" style="display:none;">
-  {% partial ifblock %}
-  {% partial simplewithfilter %}
+      {% partial ifblock %}
+      {% partial simplewithfilter %}
 	</div>
 
-  <script type="text/javascript">
-    $(function() {
-      $('script[type="text/liquid"]').each(function(index, item) {
-        Liquid.Partial.registerTemplate(item.id, $(item).html());
-      });
+    <script type="text/javascript">
+      $(function() {
+        $('script[type="text/liquid"]').each(function(index, item) {
+          Liquid.Partial.registerTemplate(item.id, $(item).html());
+        });
 
-      var page = $('#page');
-      var pageTemplate = page.html();
-      page.html(Liquid.Template.parse(pageTemplate).render({ foobar: 'bizbuzz', cheer: true })).show();
-    });
+        var page = $('#page');
+        var pageTemplate = page.html();
+        page.html(Liquid.Template.parse(pageTemplate).render({ foobar: 'bizbuzz', cheer: true })).show();
+      });
     </script>
   </body>
 </html>
