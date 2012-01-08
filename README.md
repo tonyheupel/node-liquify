@@ -2,7 +2,7 @@
 
 Liquify is a Node.js module that creates a client-side version of the Liquid Templating language (see http://github.com/shopify/liquid) for use with JavaScript in the browser, available as both plain JavaScript (public/javascripts/**liquid.js**) and as minified JavaScript (public/javascripts/**liquid.min.js**).  Please see the [liquid.js project](http://github.com/tchype/liquid.js) for the latest versions and usage.
 
-The Liquid.js library is a client-side version of [Marcel Jackwerth's](http://github.com/sirlantis) [liquid-node](http://github.com/sirlantis/liquid-node), which is a port of Tobias Lutke's Liquid templating language, originally implemented in Ruby, plus Partials that I created.
+The Liquid.js library is a client-side version of [Marcel Jackwerth's](http://github.com/sirlantis) [liquid-node](http://github.com/sirlantis/liquid-node), which is a port of Tobias Lutke's Liquid templating language, originally implemented in Ruby, plus Partials that I created in the [node-liquid-partial project](https://github.com/tchype/node-liquid-partial) to help keep templates DRY.
 
 _Note: This is currently the result of less than a week of work, so let me know if you find it useful or would like to suggest changes!_
 
