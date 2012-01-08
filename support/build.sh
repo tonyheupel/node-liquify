@@ -7,7 +7,7 @@ cp -fR ./support/node_modules/ ./node_modules/
 mv ./node_modules/node-liquid-partial ./node_modules/liquid-partial
 
 # browserify to liquify.js
-browserify --require liquify -o ./public/javascripts/liquid.js
+browserify --require liquid -o ./public/javascripts/liquid.js
 
 # patch the final output file (using tempfile nl.js)
 echo 'global = window;\n' > public/javascripts/final-liquid.js

@@ -342,7 +342,7 @@ exports.extname = function(path) {
 
 });
 
-require.define("/node_modules/liquify.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/node_modules/liquid.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Liquid;
 
