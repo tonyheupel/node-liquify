@@ -19,17 +19,19 @@ Reference liquify.js in your page, and start using it!
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Client-Side Liquid Templates</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	  <script type="text/javascript" src="./javascripts/liquify.min.js"></script>
+
+	<script type="text/javascript" src="./javascripts/liquid.min.js"></script>
     <script type="text/javascript">
-      var Liquid = require('liquify');
+      var Liquid = require('liquid');
     </script>
   </head>
+
   <body>
     <script id="simplewithfilter" type="text/liquid">
       <div>Here is the value of foobar in uppercase: <strong>{{ foobar | upcase }}</strong></div>
     </script>
 
-    <script id="ifblock" type="text/liquid">
+	<script id="ifblock" type="text/liquid">
       <div>
         Trying out the if block.  If it works, you should see "Hooray!":&nbsp;
         {% if cheer %}
@@ -38,12 +40,12 @@ Reference liquify.js in your page, and start using it!
         Boo!
         {% endif %}
       </div>
-	  </script>
+	</script>
 
-	  <div id="page" style="display:none;">
+	<div id="page" style="display:none;">
       {% partial simplewithfilter %}
       {% partial ifblock %}
-	  </div>
+	</div>
 
     <script type="text/javascript">
       $(function() {
@@ -58,6 +60,7 @@ Reference liquify.js in your page, and start using it!
     </script>
   </body>
 </html>
+
 ```
 
 Results in the following html page:
