@@ -19,13 +19,11 @@ Reference liquify.js in your page, and start using it!
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Client-Side Liquid Templates</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	
-    <script type="text/javascript" src="./javascripts/liquify.min.js"></script>
+	  <script type="text/javascript" src="./javascripts/liquify.min.js"></script>
     <script type="text/javascript">
       var Liquid = require('liquify');
     </script>
   </head>
-
   <body>
     <script id="simplewithfilter" type="text/liquid">
       <div>Here is the value of foobar in uppercase: <strong>{{ foobar | upcase }}</strong></div>
@@ -40,12 +38,22 @@ Reference liquify.js in your page, and start using it!
         Boo!
         {% endif %}
       </div>
-    </script>
+	  </script>
+
+	  <div id="page" style="display:none;">
+      {% partial ifblock %}
+      {% partial simplewithfilter %}
+	  </div>
 
     <script type="text/javascript">
       $(function() {
-        $('body').append(Liquid.Template.parse($('script#simplewithfilter').html()).render({ foobar: 'bizbuzz'}));
-        $('body').append(Liquid.Template.parse($('script#ifblock').html()).render({{ cheer: true }}));
+        $('script[type="text/liquid"]').each(function(index, item) {
+          Liquid.Partial.registerTemplate(item.id, $(item).html());
+        });
+
+        var page = $('#page');
+        var pageTemplate = page.html();
+        page.html(Liquid.Template.parse(pageTemplate).render({ foobar: 'bizbuzz', cheer: true })).show();
       });
     </script>
   </body>
