@@ -20,8 +20,8 @@ Reference liquify.js in your page, and start using it!
     <title>Client-Side Liquid Templates</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
-	<script type="text/javascript" src="./javascripts/liquid.min.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript" src="./javascripts/liquid.js"></script>
+  	<script type="text/javascript">
       var Liquid = require('liquid');
     </script>
   </head>
@@ -49,9 +49,7 @@ Reference liquify.js in your page, and start using it!
 
     <script type="text/javascript">
       $(function() {
-        $('script[type="text/liquid"]').each(function(index, item) {
-          Liquid.Partial.registerTemplate(item.id, $(item).html());
-        });
+        Liquid.Partial.registerTemplates();
 
         var page = $('#page');
         var pageTemplate = page.html();
@@ -60,7 +58,6 @@ Reference liquify.js in your page, and start using it!
     </script>
   </body>
 </html>
-
 ```
 
 Results in the following html page:

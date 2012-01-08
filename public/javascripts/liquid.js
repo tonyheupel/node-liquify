@@ -350,6 +350,24 @@ require.define("/node_modules/liquid.coffee", function (require, module, exports
 
   Liquid.Partial = require('liquid-partial');
 
+  Liquid.Partial.registerTemplates = function(rootElement) {
+    var addIfLiquid, script, scripts, _i, _len, _results;
+    if (rootElement == null) rootElement = document;
+    scripts = rootElement.getElementsByTagName('script');
+    if (!(scripts && scripts.length)) return;
+    addIfLiquid = function(script) {
+      if (script.type === 'text/liquid') {
+        return Liquid.Partial.registerTemplate(script.id, script.innerHTML);
+      }
+    };
+    _results = [];
+    for (_i = 0, _len = scripts.length; _i < _len; _i++) {
+      script = scripts[_i];
+      _results.push(addIfLiquid(script));
+    }
+    return _results;
+  };
+
   module.exports = Liquid;
 
 }).call(this);
